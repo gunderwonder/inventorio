@@ -1,6 +1,7 @@
 import uuid
 from django.db import models
 from mptt.models import MPTTModel, TreeForeignKey
+from django.utils.html import mark_safe
 
 class Item(models.Model):
 	id = models.UUIDField(primary_key=True, default=uuid.uuid4, editable=False)
@@ -26,6 +27,19 @@ class Item(models.Model):
 	purchase_date = models.DateField(blank=True, null=True)
 	created_at = models.DateTimeField(auto_now_add=True)
 	updated_at = models.DateTimeField(auto_now=True)
+
+	def initials(self):
+		self.name = self.name.split()
+		initials = ""
+		for i in self.name:
+			initials += i[0].upper()
+
+		return initials
+
+
+	def thumbnail_url(self):
+		if self.thumbnail and hasattr(self.thumbnail, 'url'):
+			return self.thumbnail.url
 
 	def __str__(self):
 		return self.name
